@@ -1,0 +1,17 @@
+{
+  "name": "tesseract-ocr-master",
+  "version": "1.0.0",
+  "description": "Extract text from image in browser using javascript library tesseract.js",
+  "main": "index.js",
+  "scripts": {
+    "dev": "index.html"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "autoprefixer": "^10.4.19",
+    "postcss": "^8.4.40",
+    "tailwindcss": "^3.4.7"
+  }
+}

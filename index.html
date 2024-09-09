@@ -1,0 +1,1006 @@
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PNG TO TEXT</title>
+    <link rel="stylesheet" href="style/ocr.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+      rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+      rel="stylesheet" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          screens: {
+            xs: "320px",
+            xss: "375px",
+            xsss: "430px",
+            sm: "640px",
+            md: "768px",
+            lg: "1024px",
+            xl: "1440px",
+            "2xl": "2560px",
+          },
+          extend: {
+            fontFamily: {
+              roboto: ["Roboto", "sans-serif"],
+              inter: ["inter", "sans-serif"],
+            },
+          },
+        },
+      };
+    </script>
+    <style></style>
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <script src="https://kit.fontawesome.com/4414288e8e.js"></script>
+    <script src="js/tesseract.min.js"></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const hamburger = document.getElementById("hamburger");
+        const navbuttons = document.getElementById("navbuttons");
+        hamburger.addEventListener("click", function () {
+          navbuttons.classList.toggle("hidden");
+          if (navbuttons.classList.contains("hidden")) {
+            navbuttons.style.top = "";
+            navbuttons.style.left = "";
+            navbuttons.style.right = "";
+            navbuttons.style.padding = "";
+            navbuttons.style.boxShadow = "";
+            navbuttons.style.backgroundColor = "";
+          } else {
+            if (window.matchMedia("(max-width: 768px)").matches) {
+              navbuttons.style.top = "100px";
+              navbuttons.style.left = "0px";
+              navbuttons.style.right = "0px";
+              navbuttons.style.padding = "20px";
+              navbuttons.style.boxShadow =
+                " 0 25px 50px -12px rgb(0 0 0 / 0.25)";
+              navbuttons.style.backgroundColor = "#ffffff";
+            }
+          }
+        });
+        const currentvalue = document.getElementById("selectedvalue");
+        const optionselect = document.getElementById("selectoptions");
+        const selectedimage = currentvalue.querySelector("img");
+        currentvalue.addEventListener("click", function () {
+          optionselect.classList.toggle("hidden");
+        });
+        optionselect.querySelectorAll("div").forEach((element) => {
+          element.addEventListener("click", function () {
+            const text = this.getAttribute("data-value");
+            const icon = this.getAttribute("data-icon");
+            currentvalue.querySelector("h3").textContent = text;
+            currentvalue.querySelector("img").src = icon;
+            optionselect.classList.add("hidden");
+          });
+        });
+        document
+          .getElementById("file-1")
+          .addEventListener("change", function () {
+            const box = document.getElementById("secondbox");
+            const show = document.getElementById("hide-img");
+            const show2 = document.getElementById("hide-img2");
+            const flex = document.getElementById("remove-flex");
+            const height = document.getElementById("remove-h");
+            const support = document.getElementById("hide-suport");
+            const select = document.getElementById("file-select");
+            const select2 = document.getElementById("file-select2");
+            const selectbg = document.getElementById("select-bg");
+            const showq = document.getElementById("show");
+            box.classList.toggle("hidden");
+            show.classList.toggle("hidden");
+            show2.classList.toggle("hidden");
+            flex.classList.remove("flex-col");
+            height.style.height = "95px";
+            support.classList.toggle("hidden");
+            select.style.display = "none";
+            select2.classList.toggle("hidden");
+            selectbg.style.backgroundColor = "#fff";
+            selectbg.style.color = "#e25884";
+            showq.textContent = "Drag and drop images here,";
+          });
+        const minus = document.getElementById("minussign");
+        const plus = document.getElementById("plussign");
+        const content = document.getElementById("content");
+        minus.addEventListener("click", function () {
+          plus.classList.toggle("hidden");
+          minus.classList.toggle("hidden");
+          content.classList.add("hidden");
+        });
+        plus.addEventListener("click", function () {
+          minus.classList.toggle("hidden");
+          plus.classList.toggle("hidden");
+          content.classList.remove("hidden");
+        });
+        const minus2 = document.getElementById("minussign2");
+        const plus2 = document.getElementById("plussign2");
+        const content2 = document.getElementById("content2");
+        minus2.addEventListener("click", function () {
+          plus2.classList.toggle("hidden");
+          minus2.classList.toggle("hidden");
+          content2.classList.add("hidden");
+        });
+        plus2.addEventListener("click", function () {
+          minus2.classList.toggle("hidden");
+          plus2.classList.toggle("hidden");
+          content2.classList.remove("hidden");
+        });
+        const minus3 = document.getElementById("minussign3");
+        const plus3 = document.getElementById("plussign3");
+        const content3 = document.getElementById("content3");
+        minus3.addEventListener("click", function () {
+          plus3.classList.toggle("hidden");
+          minus3.classList.toggle("hidden");
+          content3.classList.add("hidden");
+        });
+        plus3.addEventListener("click", function () {
+          minus3.classList.toggle("hidden");
+          plus3.classList.toggle("hidden");
+          content3.classList.remove("hidden");
+        });
+      });
+    </script>
+  </head>
+
+  <body>
+    <main class="container p-0 mx-4 mx-auto overflow-x-hidden max-w-[1400px]">
+      <!-- Header Settion -->
+      <header class="flex items-center justify-between mx-2 w-[95%] mx-auto">
+        <div>
+          <img src="/images/logo.png" class="w-20 h-auto mt-2" />
+        </div>
+        <img
+          id="hamburger"
+          src="/images/hamburger.png"
+          class="w-6 h-6 lg:hidden" />
+        <ul
+          id="navbuttons"
+          class="items-center justify-between gap-16 lg:flex lg:relative lg:top-0 lg:left-0 lg:shadow-nonea lg:top-0 xs:absolute xs:top-[-250px] xs:left-20 hidden lg:space-y-0 xs:space-y-6">
+          <li class="text text-[16px] font-roboto font-normal">
+            Text<span class="">Spinner</span>
+          </li>
+          <li class="text text-[16px] font-roboto font-normal">
+            Paraphrasing<span class="">Tool</span>
+          </li>
+          <li class="text text-[16px] font-roboto font-normal">
+            Grammar<span class="">Checker</span>
+          </li>
+          <li class="text text-[16px] font-roboto font-normal">Summarizer</li>
+          <div
+            id="customselect"
+            class="rounded xs:w-[30%] lg:w-full fixed-border">
+            <div
+              id="selectedvalue"
+              class="relative flex items-center px-3 py-1 space-x-2 rounded text">
+              <image src="/images/en.svg" class="w-5 h-5 rounded-full" />
+              <h3 class="text-black">EN</h3>
+              <img src="/images/Vector 34.png" class="w-3 h-2" />
+            </div>
+            <div
+              id="selectoptions"
+              class="absolute flex flex-col justify-center hidden shadow-lg lg:right-5 xs:top-70 xs:bg-white lg:top-10">
+              <div data-value="EN" data-icon="/images/en.svg">
+                <div class="flex items-center px-3 py-1 space-x-2 rounded text">
+                  <image src="/images/en.svg" class="w-5 h-5 rounded-full" />
+                  <h3 class="text-black">EN</h3>
+                </div>
+              </div>
+              <div data-value="ES" data-icon="/images/es.svg">
+                <div class="flex items-center px-3 py-1 space-x-2 rounded text">
+                  <image src="/images/es.svg" class="w-5 h-5 rounded-full" />
+                  <h3 class="text-black">ES</h3>
+                </div>
+              </div>
+              <div data-value="ID" data-icon="/images/id.svg">
+                <div class="flex items-center px-3 py-1 space-x-2 rounded text">
+                  <image src="/images/id.svg" class="w-5 h-5 rounded-full" />
+                  <h3 class="text-black">ID</h3>
+                </div>
+              </div>
+              <div data-value="DA" data-icon="/images/da.svg">
+                <div class="flex items-center px-3 py-1 space-x-2 rounded text">
+                  <image src="/images/da.svg" class="w-5 h-5 rounded-full" />
+                  <h3 class="text-black">DA</h3>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ul>
+      </header>
+
+      <!-- Main Section -->
+      <section class="mt-10">
+        <h1
+          class="font-bold lg:text-[34px] xs:text-[28px] lg:px-0 xss:px-4 xs:px-10 lg:leading-normal xs:leading-tight font-roboto text-center text">
+          Image to Text Converter
+        </h1>
+        <h2
+          class="mt-4 text-center md:px-12 xs:px-6 xss:px-8 lg:px-0 text-[#000] text-[18px] font-normal font-roboto">
+          Turn picture into text with our free image to text converter. Simply
+          upload your photos in our online OCR and extract text from image with
+          a single click.
+        </h2>
+
+        <div
+          class="flex flex-col items-center justify-between px-6 mt-6 space-y-4">
+          <div
+            id="remove-h"
+            class="flex flex-col items-center justify-center lg:w-[79%] xs:w-[100%] mx-auto border border-dashed rounded-lg fixed-border lg:h-96 xs:h-auto py-4">
+            <div
+              id="remove-flex"
+              class="flex flex-col items-center justify-between space-y-2 xs:space-x-3 lg:space-x-3">
+              <img
+                id="hide-img"
+                src="images/tool-upload-img.png"
+                class="lg:h-40 xs:h-auto xs:w-28 lg:w-44" />
+              <img
+                id="hide-img2"
+                src="/images/Vector.png"
+                class="hidden w-6 h-6" />
+              <h3
+                class="md:text-[16px] xs:text-[14px] font-roboto font-medium flex md:flex-row xs:flex-col space-x-4"
+                id="show">
+                Drag and drop images here
+                <span
+                  id="file-select2"
+                  class="flex md:ml-2 hidden text-[#e25884] md:text-[16px] xs:text-[14px] font-medium font-roboto"
+                  >Browse</span
+                >
+              </h3>
+              <h3
+                class="md:text-[14px] xs:text-[13px] font-roboto second-text xss:px-16 text-center xs:px-14"
+                id="hide-suport">
+                Files supported: JPG | PNG | JPEG | GIF | JFIF
+              </h3>
+              <div class="md:mt-2 xs:mt-4 box">
+                <input
+                  type="file"
+                  name="file-1[]"
+                  id="file-1"
+                  class="inputfile inputfile-1"
+                  data-multiple-caption="{count} files selected"
+                  multiple />
+                <label for="file-1" id="file-select">
+                  <span>+ Browse</span>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div
+            id="secondbox"
+            class="relative flex md:flex-row xs:flex-col items-center lg:px-4 lg:w-[79%] xs:w-full overflow-x-hidden mx-auto hidden rounded-lg fixed-border h-80">
+            <div class="flex flex-col space-y-6 lg:px-0 xs:px-3 lg:w-[30%]">
+              <h3
+                class="text-[16px] lg:pl-4 xs:pl-2 xs:mt-3 md:mt-0 font-roboto font-bold text-start">
+                Your Files Have Been Converted
+              </h3>
+              <img
+                id="selected-image"
+                src="images/"
+                class="w-[250px] h-[150px]" />
+            </div>
+            <div
+              id="overlay"
+              class="fixed inset-0 z-50 bg-black bg-opacity-50"></div>
+            <div
+              class="relative flex flex-col lg:justify-center lg:w-[70%] md:w-[50%] h-auto xs:w-full">
+              <div id="log" class="" aria-live="polite"></div>
+              <div
+                id="spinner"
+                class="flex items-center fixed left-[50%] top-[50%] justify-between lg:h-[80px] xl:w-[15%] lg:w-[20%] md:w-[30%] xs:w-[80%]"
+                style="display: none; text-align: center abdolute">
+                <div class="flex-1 loader"></div>
+                <div class="flex flex-col ml-8 -mt-10">
+                  <span>Processing...</span>
+                  <div id="progress-percentage" class=""></div>
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="flex items-end md:justify-end xs:justify-center w-[20%] md:mt-60 mb-4">
+              <button
+                id="refresh"
+                class="bg-[#e25884] text-white md:mx-2 px-4 py-2 rounded"
+                onclick="location.reload()">
+                StartOver
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Other Tools -->
+      <section class="mt-20 mb-10">
+        <div>
+          <h2 class="text-[24px] font-roboto font-medium text-center text">
+            Other Tools
+          </h2>
+          <h2
+            class="mt-2 text-base font-normal text-center font-roboto second-text">
+            Check out our other tools
+          </h2>
+        </div>
+        <div class="flex items-center justify-between xs:flex-col">
+          <div
+            class="flex items-center justify-center mt-10 lg:gap-16 xs:gap-10 lg:flex-row xs:flex-col">
+            <div
+              class="flex items-center justify-center px-10 py-6 space-x-2 text-white rounded-lg border-color lg:w-96">
+              <img src="/images/Group 3670.png" class="w-8 h-8" />
+              <h3 class="text-[18px] font-medium text font-roboto">
+                JPG to Word
+              </h3>
+            </div>
+            <div
+              class="flex items-center justify-center px-10 py-6 space-x-2 text-white rounded-lg border-color lg:w-96">
+              <img src="/images/Group 3673.png" class="w-8 h-8" />
+              <h3 class="text-[18px] font-medium text font-roboto">
+                PDF to Word
+              </h3>
+            </div>
+            <div
+              class="flex items-center justify-center px-10 py-6 space-x-2 text-white rounded-lg border-color lg:w-96">
+              <img src="/images/Group 3677.png" class="w-8 h-8" />
+              <h3 class="text-[18px] font-medium text font-roboto">
+                JPG to PDF
+              </h3>
+            </div>
+          </div>
+
+          <div
+            class="flex items-center justify-center lg:mt-16 xs:mt-8 lg:gap-16 xs:gap-8 lg:flex-row xs:flex-col">
+            <div
+              class="flex items-center justify-center px-10 py-6 space-x-2 text-white rounded-lg border-color lg:w-96">
+              <img src="/images/Group 3678.png" class="w-8 h-8" />
+              <h3 class="text-[18px] font-medium text font-roboto">
+                JPG to Text
+              </h3>
+            </div>
+            <div
+              class="flex items-center justify-center px-10 py-6 space-x-2 text-white rounded-lg border-color lg:w-96">
+              <img src="/images/Group 3679.png" class="w-8 h-8" />
+              <h3 class="text-[18px] font-medium text font-roboto">
+                Invert Image
+              </h3>
+            </div>
+            <div
+              class="flex items-center justify-center px-10 py-6 space-x-2 text-white rounded-lg border-color lg:w-96">
+              <img src="/images/Group 3680.png" class="w-8 h-8" />
+              <h3 class="text-[18px] font-medium text font-roboto">
+                Text to Word
+              </h3>
+            </div>
+          </div>
+
+          <div
+            class="flex items-center justify-center lg:gap-16 lg:mt-16 xs:gap-10 xs:mt-10 lg:flex-row xs:flex-col">
+            <div
+              class="flex items-center justify-center px-10 py-6 space-x-2 text-white rounded-lg border-color lg:w-96">
+              <img src="/images/Group 3680.png" class="w-8 h-8" />
+              <h3 class="text-[18px] font-medium text font-roboto">
+                Text to PDF
+              </h3>
+            </div>
+            <div
+              class="flex items-center justify-center px-10 py-6 space-x-2 text-white rounded-lg border-color lg:w-96">
+              <img src="/images/Group 3682.png" class="w-8 h-8" />
+              <h3 class="text-[18px] font-medium text font-roboto">
+                Word to Text
+              </h3>
+            </div>
+            <div
+              class="flex items-center justify-center px-10 py-6 space-x-2 text-white rounded-lg border-color lg:w-96">
+              <img src="/images/Mask group.png" class="w-8 h-8" />
+              <h3 class="text-[18px] font-medium text font-roboto">
+                Text to Image
+              </h3>
+            </div>
+          </div>
+
+          <div class="flex items-center justify-center lg:mt-16 xs:mt-8">
+            <div
+              class="flex items-center justify-center px-10 py-6 space-x-2 text-white border-2 rounded-lg border-color lg:w-96">
+              <img src="/images/Group 3685.png" class="w-8 h-8" />
+              <h3 class="text-[18px] font-medium text font-roboto">
+                Image Translator
+              </h3>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- How this tool work Section -->
+      <section class="mt-20 mb-10 md:w-[97%] lg:w-[95%] mx-auto">
+        <div>
+          <h2
+            class="text-[24px] leading-normal lg:px-0 xs:px-10 font-roboto font-medium text-center text">
+            How does this tool works
+          </h2>
+          <h3
+            class="text-[16px] xss:px-6 xs:px-10 xs:pt-2 text-center font-roboto font-light second-text">
+            Follow the steps below to extract text from am image
+          </h3>
+        </div>
+        <div
+          class="flex items-center mx-auto xs:gap-16 lg:gap-10 mt-28 lg:ml-20 xs:ml-6 lg:flex-row xs:flex-col">
+          <div class="space-y-4 lg:w-4/12">
+            <img src="/images/Step1.png" class="w-10 h-10" />
+            <h2 class="text-[22px] font-roboto font-medium text">
+              Upload Images
+            </h2>
+            <h2
+              class="lg:w-9/12 md:w-full xs:w-11/12 text-[18px] font-roboto font-light second-text leading-loose">
+              You can drag and drop Images into the input box above or select
+              images from your local device. Supported image formats are JPG,
+              PNG, JPEG, BMP, GIF, and TIFF.
+            </h2>
+          </div>
+          <div class="space-y-4 lg:w-4/12">
+            <img src="/images/Step2.png" class="w-10 h-10" />
+            <h2 class="text-[22px] font-roboto font-medium text">
+              Auto Extract Text from Images
+            </h2>
+            <h2
+              class="lg:w-9/12 md:w-full xs:w-11/12 text-[18px] font-roboto font-light second-text leading-loose">
+              Our Image to text converter automatically extracts text from
+              images and transforms it into editable text. Imagetotext.info
+              helped us to automate this process.
+            </h2>
+          </div>
+          <div class="space-y-4 lg:w-4/12">
+            <img src="/images/Step1.png" class="w-10 h-10" />
+            <h2 class="text-[22px] font-roboto font-medium text">
+              Download/Copy Options
+            </h2>
+            <h2
+              class="lg:w-9/12 xs:w-11/12 md:w-full text-[18px] font-roboto font-light second-text leading-loose">
+              Download your converted text by clicking the download icon (
+              Download file icon ) or copy content to the clipboard using copy
+              button ( Copy file Icon ).
+            </h2>
+          </div>
+        </div>
+      </section>
+
+      <!-- Image to text Section -->
+      <section
+        class="flex justify-start mx-auto mb-20 lg:mt-24 xs:mt-28 lg:w-10/12 md:w-10/12 xs:w-9/12">
+        <div class="lg:space-y-4 xs:space-y-2 lg:w-8/12">
+          <h2 class="text-[30px] font-medium font-roboto text leading-loose">
+            Image to Text Converter
+          </h2>
+          <h2
+            class="text-[18px] font-roboto second-text leading-loose font-light">
+            Online Image to text converter converts any image into editable
+            text. We have developed this tool using OCR (Optical Character
+            Recognition). Tesseract and other Python libraries are used to
+            refine the extracted text.<br />
+            Below are some of the best features that out stands our tool:
+          </h2>
+
+          <div
+            class="flex lg:w-10/12 xs:9/12 mx-auto border shadow-2xl lg:w-11/12 xl:w-9/12 lg:h-44 md:h-44 xss:h-80 xs:h-96 font-roboto text-[18px] font-light">
+            <div class="p-6 md:space-y-2 xss:space-y-6 xs:space-y-12">
+              <h3 class="text-lg second-text">🎯 Formats</h3>
+              <h3 class="text-lg second-text">✍️Download</h3>
+              <h3 class="text-lg second-text">💲 Price</h3>
+              <h3 class="text-lg second-text">🗺 Languages</h3>
+            </div>
+            <div
+              class="text-lg md:space-y-2 md:py-6 xs:space-y-4 lg:p-6 xsss:space-y-8 xsss:py-8 xs:py-4 second-text">
+              <h3 class="">JPG, PNG, GIF & more</h3>
+              <h3 class="">Copy to Clipboard or Download .txt File</h3>
+              <h3 class="">Free Unlimited Access</h3>
+              <h3 class="">EN ID DE FR ES and more</h3>
+            </div>
+          </div>
+
+          <div class="mt-2 lg:space-y-4 xs:space-y-2">
+            <h3 class="text-[30px] font-roboto font-medium text leading-loose">
+              How does the Image to text converter work?
+            </h3>
+            <h3
+              class="text-[18px] font-roboto font-light leading-loose second-text">
+              Based on OCR technology, the image to text tool is developed with
+              advanced libraries and text recognition models.<br />
+              Different patterns of characters are classified into different
+              prototypes. Commonly, an Image OCR tool performs the following
+              functions:
+            </h3>
+            <li
+              class="text-[18px] font-roboto font-light leading-loose second-text">
+              First, our tool scans and extract text from the Image.
+            </li>
+            <li
+              class="text-[18px] font-roboto font-light leading-loose second-text">
+              Then it does location segmentation and arranges text according to
+              the image.
+            </li>
+            <li
+              class="text-[18px] font-roboto font-light leading-loose second-text">
+              After the text is fully extracted, our tool performs very light
+              grammar corrections to make it more accurate.
+            </li>
+          </div>
+
+          <div class="space-y-4">
+            <h3 class="text-[30px] font-roboto font-medium leading-loose text">
+              Key Features of Our Picture to Text Converter
+            </h3>
+            <h3
+              class="text-[24px] font-roboto font-medium text leading-loose xs:pr-4">
+              Low-resolution image extractor:
+            </h3>
+            <h3
+              class="text-[18px] font-roboto font-light leading-loose second-text">
+              Our image text extractor can easily extract text from blurry and
+              low-resolution images. Images of books, self-written works, and
+              screenshots are dim and cannot be comprehended easily. Yet this
+              img to text can get data from such images with high accuracy.
+            </h3>
+            <h3 class="text-[24px] font-roboto font-medium text">
+              Detect mathematical syntax:
+            </h3>
+            <h3
+              class="text-[18px] font-roboto font-light leading-loose second-text">
+              This photo to text converter contains a wide range of data fed
+              into it through machine learning. You can use it to extract
+              mathematical expressions from images accurately. Arithmetic
+              equations and polynomial expressions are often complex, but our
+              tool identifies them as human.
+            </h3>
+            <h3 class="text-[24px] font-medium font-roboto text">
+              Free to use:
+            </h3>
+            <h3
+              class="text-[18px] font-roboto font-light leading-loose second-text">
+              This tool is available for everyone. You can copy text from images
+              without signing up.
+            </h3>
+            <h3 class="text-[24px] font-medium font-roboto text leading-loose">
+              Handles multiple languages:
+            </h3>
+            <h3
+              class="text-[18px] font-roboto font-light leading-loose second-text">
+              A great feature of this tool is its versatility in understanding
+              numerous languages. You can transform multiple language images
+              into text by using this tool. These languages include Chinese,
+              Indonesian, Danish, German, English, Spanish, French,Italian,
+              Polish, Portuguese, Romanian, Swedish, Czech, Russian, Thai, and
+              Korean.
+            </h3>
+            <h3 class="text-[24px] font-medium font-roboto text leading-loose">
+              Support multiple file formats
+            </h3>
+            <h3
+              class="text-[18px] font-roboto font-light leading-loose second-text">
+              This photo text converter supports multiple image file formats.
+              You can upload the images in the following file format to get text
+              from them.
+            </h3>
+            <li
+              class="text-[18px] font-roboto font-light leading-loose second-text">
+              JPG
+            </li>
+            <li
+              class="text-[18px] font-roboto font-light leading-loose second-text">
+              PNG
+            </li>
+            <li
+              class="text-[18px] font-roboto font-light leading-loose second-text">
+              JPEG
+            </li>
+            <li
+              class="text-[18px] font-roboto font-light leading-loose second-text">
+              BMP
+            </li>
+            <li
+              class="text-[18px] font-roboto font-light leading-loose second-text">
+              GIF
+            </li>
+            <li
+              class="text-[18px] font-roboto font-light leading-loose second-text">
+              TIFF
+            </li>
+            <li
+              class="text-[18px] font-roboto font-light leading-loose second-text">
+              WEBP
+            </li>
+            <h3
+              class="md:text-[24px] xs:text-[30px] leading-loose md:pr-0 xs:pr-4 font-medium font-roboto text">
+              Image to text tool Uses
+            </h3>
+            <h3
+              class="text-[18px] font-roboto font-light leading-loose second-text">
+              Image to text extractor has multiple uses. It enables us to
+              extract text from images and scanned documents. It makes content:
+            </h3>
+            <li
+              class="text-[18px] font-roboto font-light leading-loose second-text">
+              Searchable
+            </li>
+            <li
+              class="text-[18px] font-roboto font-light leading-loose second-text">
+              Editable
+            </li>
+            <li
+              class="text-[18px] font-roboto font-light leading-loose second-text">
+              Accessible
+            </li>
+            <h3
+              class="text-[18px] font-roboto font-light leading-loose second-text">
+              Apart from that some uses of the image to text are discussed
+              below:
+            </h3>
+            <h3 class="text-[24px] font-roboto font-medium text">
+              Data extraction:
+            </h3>
+            <h3
+              class="text-[18px] font-roboto font-light leading-loose second-text">
+              It is used to extract text from invoices, receipts, forms,tables,
+              and other documents to create databases and spreadsheets.
+            </h3>
+            <h3 class="text-[24px] font-roboto font-medium text">
+              Accessibility:
+            </h3>
+            <h3
+              class="text-[18px] font-roboto font-light leading-loose second-text">
+              Printed or handwritten documents are accessible to visually
+              present users only. Converting images to text can then be read
+              aloud by screen readers.
+            </h3>
+            <h3 class="text-[24px] font-medium font-roboto text">
+              Digitizing books:
+            </h3>
+            <h3
+              class="text-[18px] font-roboto font-light leading-loose second-text">
+              Digital books are one of the best sources of reading. Converting
+              printed books into digital text makes it more easily searchable,
+              and distribution is also much easier than physical books.
+            </h3>
+            <h3 class="text-[24px] font-roboto font-medium text">
+              Searchable PDFs:
+            </h3>
+            <h3
+              class="text-[18px] font-roboto font-light leading-loose second-text">
+              PDFs are searchable at Google. Sometimes Google shows results from
+              pdf documents. Converting scanned documents to searchable PDFs
+              makes it easier to search within a document and makes it
+              searchable for search engine bots.
+            </h3>
+            <h3 class="text-[24px] font-medium font-roboto text">
+              Editing text:
+            </h3>
+            <h3
+              class="text-[18px] font-roboto font-light leading-loose second-text">
+              One of the best benefits of converting an image into text is
+              editing. As texts are easily editable and correctable.
+            </h3>
+            <h3 class="text-[24px] font-medium font-roboto text">
+              Data analysis:
+            </h3>
+            <h3
+              class="text-[18px] font-roboto font-light leading-loose second-text">
+              Analyzing data images is very tough. Extract text from images for
+              further analysis, such as in market research and content analysis.
+            </h3>
+            <h3
+              class="text-[24px] font-medium xs:pr-4 md:pr-0 font-roboto text">
+              Educational purposes:
+            </h3>
+            <h3
+              class="text-[18px] font-roboto font-light leading-loose second-text">
+              Students can convert scanned study notes, textbooks, and lecture
+              notes into text for better organization.<br />
+              You can turn handwritten class notes into text using our online
+              image to text converter.
+            </h3>
+            <h3 class="text-[24px] font-roboto font-medium text">
+              Legal and compliance:
+            </h3>
+            <h3
+              class="text-[18px] font-roboto font-light leading-loose second-text">
+              Legal documents are mostly sent in printed format. Using pic to
+              text converter, you can extract key information from legal
+              documents, contracts, or government forms.<br />
+              With this picture to text converter, we can convert printed papers
+              into digitalized versions.
+            </h3>
+            <h3
+              class="text-[24px] font-roboto xs:pr-4 lg:pr-0 leading-loose font-medium text">
+              Business automation:
+            </h3>
+            <h3
+              class="text-[18px] font-roboto font-light leading-loose second-text">
+              Usual paperwork has become an antique thing in business handling.
+              Automated enterprises are leading the business world now.<br />
+              Particularly, manual paperwork for generating databases is very
+              time-consuming and expensive. With the use of the image to text
+              converter, you can streamline all your administrative work.
+              Moreover, it can optimize your machinery by indexing necessary
+              information.
+            </h3>
+            <h3 class="text-[30px] font-roboto font-medium leading-loose text">
+              Who can Use our Image to text Converter?
+            </h3>
+            <h3 class="text-[24px] font-roboto font-medium text">1. Offices</h3>
+            <h3
+              class="text-[18px] font-roboto font-light leading-loose second-text">
+              Our picture to text converter is an excellent tool for
+              streamlining data entry tasks in offices. It can easily convert
+              invoices, receipts, and other important documents into editable
+              text formats. Office personnel can use this converter to extract
+              relevant information from these documents with ease. Moreover,
+              with Imagetotext.io, offices can easily maintain their databases
+              by scanning and digitizing papers. This ultimately reduces the
+              risk of manual data entry errors.
+            </h3>
+            <h3 class="text-[24px] font-medium font-roboto text">
+              2. Individuals
+            </h3>
+            <h3
+              class="text-[18px] font-roboto font-light leading-loose second-text">
+              Individuals can use our photo to text converter for a variety of
+              personal tasks. These can be digitizing handwritten notes and
+              converting printed books to e-books. Moreover, our screenshot to
+              text tool is capable of extracting readable text from screenshots.
+              This saves time and hassle when copying, editing, or searching for
+              specific information in the image.
+            </h3>
+            <h3
+              class="text-[24px] font-roboto xs:pr-4 md:pr-0 leading-loose font-medium text">
+              3. Digitalizing Documents
+            </h3>
+            <h3
+              class="text-[18px] font-roboto font-light leading-loose second-text">
+              With this picture to text converter, you can convert printed
+              papers into digitalized versions to make them easily searchable,
+              editable, and shareable.
+            </h3>
+            <h3 class="text-[24px] font-roboto font-medium text">
+              4. Students Notes
+            </h3>
+            <h3
+              class="text-[18px] font-roboto font-light leading-loose second-text">
+              Taking notes in the classroom is an important part of the learning
+              process, but traditional handwritten notes can be difficult to
+              organize and review. With our jpg to text converter, students can
+              easily capture notes taken on paper and convert them to digital
+              text format.
+            </h3>
+            <h3 class="text-[24px] font-medium font-roboto text">
+              5. Newspaper media
+            </h3>
+            <h3
+              class="text-[18px] font-roboto font-light leading-loose second-text">
+              The news from newspapers may need to be shared on social media or
+              in WhatsApp groups. Our tool can help you to convert images to
+              text in no time, and they can share extracted text anywhere, e-g:
+              Twitter, Facebook, Reddit, etc.<br />
+              Additionally, you can paste the extracted text into an online
+              notepad like online notepad for further editing and sharing with
+              your friends or colleagues.
+            </h3>
+          </div>
+        </div>
+      </section>
+
+      <!-- Faqs Section -->
+      <section class="w-full mb-20">
+        <div>
+          <h2 class="text-[30px] font-roboto font-medium text-center text">
+            Frequently Asked Questions (FAQs)
+          </h2>
+        </div>
+        <div class="pt-10 mx-auto space-y-2 xs:w-10/12 lg:w-2/3">
+          <div class="flex items-center justify-between">
+            <h3 class="text-[24px] font-roboto font-medium text">
+              How To Copy Text From Image?
+            </h3>
+            <img
+              id="minussign"
+              src="/images/Vector 52.png"
+              class="w-4 h-1 cursor-pointer" />
+            <img
+              id="plussign"
+              src="/images/Group 3751.png"
+              class="hidden w-5 h-auto cursor-pointer" />
+          </div>
+          <div id="content" class="transition-all">
+            <h3
+              class="text-[18px] font-roboto font-light leading-loose second-text">
+              Follow these steps to get text from an image:
+            </h3>
+            <li
+              class="text-[18px] font-roboto font-light leading-loose second-text">
+              Head to imagetotext.io.
+            </li>
+            <li
+              class="text-[18px] font-roboto font-light leading-loose second-text">
+              Upload or copy/paste your image into the input box.
+            </li>
+            <li
+              class="text-[18px] font-roboto font-light leading-loose second-text">
+              Press the submit button.
+            </li>
+            <li
+              class="text-[18px] font-roboto font-light leading-loose second-text">
+              Copy the extracted text, or download it as a text file.
+            </li>
+          </div>
+
+          <div class="pt-4 border-b border-[#e25884]"></div>
+        </div>
+        <div class="pt-10 mx-auto space-y-2 lg:w-2/3 xs:w-10/12">
+          <div class="flex items-center justify-between">
+            <h3 class="text-[24px] font-medium font-roboto text">
+              How does our Photo To Text Tools Works?
+            </h3>
+            <img
+              id="minussign2"
+              src="/images/Vector 52.png"
+              class="w-4 h-1 cursor-pointer" />
+            <img
+              id="plussign2"
+              src="/images/Group 3751.png"
+              class="hidden w-5 h-auto cursor-pointer" />
+          </div>
+          <h3
+            id="content2"
+            class="lg:w-2/3 text-[18px] font-roboto font-light leading-loose second-text">
+            Photo to text converter is an online tool that convert a photo into
+            text. It works by analyzing the pixels of the image and then
+            converting them into words. The technology can be used to convert
+            scanned documents into text or digital formats.
+          </h3>
+          <div class="pt-4 border-b border-[#e25884]"></div>
+        </div>
+        <div class="pt-10 mx-auto space-y-2 xs:w-10/12 lg:w-2/3">
+          <div class="flex items-center justify-between">
+            <h3 class="text-[24px] font-medium font-roboto text">
+              Why Do We Need To Extract Text From Images?
+            </h3>
+            <img
+              id="minussign3"
+              src="/images/Vector 52.png"
+              class="w-4 h-1 cursor-pointer" />
+            <img
+              id="plussign3"
+              src="/images/Group 3751.png"
+              class="hidden w-5 h-auto cursor-pointer" />
+          </div>
+          <h3
+            id="content3"
+            class="text-[18px] font-roboto font-light leading-loose second-text">
+            Text extraction from images is crucial for creating accessible,
+            searchable, editable, and shareable versions of the information
+            contained in images. By using an image to text converter, we can
+            easily get text from images and make the information more usable and
+            valuable.
+          </h3>
+          <div class="pt-4 border-b border-[#e25884]"></div>
+        </div>
+      </section>
+
+      <!-- Blogs Section -->
+      <section class="lg:w-[90%] xs:w-[95%] mx-auto mt-10 mb-10">
+        <div class="w-8/12">
+          <h3 class="text-[30px] font-roboto font-medium text">
+            Popular Blogs:
+          </h3>
+        </div>
+        <div
+          class="flex lg:space-x-4 lg:space-y-0 xs:space-y-5 xs:flex-col lg:flex-row mt-14 justif-between">
+          <div class="lg:w-[33.33%] border border-[#ccc]">
+            <img src="/images/Group 3734.png" class="lg:w-full lg:h-60" />
+            <div class="flex items-center justify-center px-2 pt-4 pb-2">
+              <h2 class="text-[18px] font-roboto second-text font-medium">
+                Complete Guide on Optical Character Recognition
+              </h2>
+              <div class="flex items-center justify-center">
+                <img src="/images/Vector (1).png" class="h-4 mr-2" />
+              </div>
+            </div>
+          </div>
+          <div class="lg:w-[33.33%] border border-[#ccc]">
+            <img src="/images/Group 3735.png" class="lg:w-full lg:h-60" />
+            <div class="flex items-center justify-between px-2 pt-4 pb-2">
+              <h2 class="text-[18px] font-roboto second-text font-medium">
+                Tips to Convert PDF to the Text file
+              </h2>
+              <div class="flex items-center justify-center">
+                <img src="/images/Vector (1).png" class="h-4 mr-2" />
+              </div>
+            </div>
+          </div>
+          <div class="lg:w-[33.33%] border border-[#ccc]">
+            <img src="/images/Group 3736.png" class="lg:w-full lg:h-60" />
+            <div class="flex items-center pt-4 pb-2">
+              <h2 class="text-[18px] font-roboto second-text font-medium pr-4">
+                Turn Images into Text in Three Easy Steps
+              </h2>
+              <div class="flex items-center justify-center">
+                <img src="/images/Vector (1).png" class="h-4 mr-2" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Footer -->
+      <footer
+        class="flex lg:flex-row xs:flex-col justify-between lg:w-11/12 mx-auto xs:w-[95%] lg:w-[90%] gap-[1.5rem] mb-16 mt-28">
+        <div class="lg:w-[15%]">
+          <h3 class="text-[24px] font-roboto font-medium">Pngtotext</h3>
+          <div class="mt-10 mb-6">
+            <div class="flex space-x-3">
+              <img src="/images/envelope.svg" />
+              <h3 class="font-roboto text-[16px]">info@pngtotext.com</h3>
+            </div>
+            <div class="flex mt-3 space-x-3">
+              <img src="/images/facebook.svg" />
+              <h3 class="font-roboto text-[16px]">Facebook</h3>
+            </div>
+            <div class="flex mt-3 space-x-3">
+              <img src="/images/linkdln.svg" />
+              <h3 class="font-roboto text-[16px]">Linkedin</h3>
+            </div>
+          </div>
+        </div>
+
+        <div class="lg:w-[45%]">
+          <h3 class="text-[24px] font-roboto font-medium">Our Mission</h3>
+          <div class="w-11/12 lg:mt-10 xs:mt-5">
+            <h3 class="text-[18px] font-roboto font-normal xs:leading-loose">
+              We provide an online OCR (Optical Character Recognition) service
+              to extract text from images for free.
+            </h3>
+          </div>
+        </div>
+        <div class="lg:w-[15%]">
+          <h3 class="text-[24px] font-roboto font-medium">Other Tools</h3>
+          <div class="lg:mt-10 xs:mt-8 xs:mb-4">
+            <div class="">
+              <h3 class="font-roboto text-[16px]">JPG To Word</h3>
+            </div>
+            <div class="mt-3">
+              <h3 class="font-roboto text-[16px]">PDF To Word</h3>
+            </div>
+            <div class="mt-3">
+              <h3 class="font-roboto text-[16px]">JPG To PDF</h3>
+            </div>
+          </div>
+        </div>
+        <div class="lg:w-[15%]">
+          <h3 class="text-[24px] font-roboto font-medium">Other Links</h3>
+          <div class="lg:mt-10 xs:mt-8">
+            <div class="">
+              <h3 class="font-roboto text-[16px]">Blog</h3>
+            </div>
+            <div class="mt-3">
+              <h3 class="font-roboto text-[16px]">Contact Us</h3>
+            </div>
+            <div class="mt-3">
+              <h3 class="font-roboto text-[16px]">About Us</h3>
+            </div>
+            <div class="mt-3">
+              <h3 class="font-roboto text-[16px]">Privacy Policy</h3>
+            </div>
+            <div class="mt-3">
+              <h3 class="font-roboto text-[16px]">Terms and Conditions</h3>
+            </div>
+            <div class="mt-3">
+              <h3 class="font-roboto text-[16px]">Refund Policy</h3>
+            </div>
+          </div>
+        </div>
+      </footer>
+    </main>
+    <script src="js/tesseract-ocr.js"></script>
+  </body>
+</html>
